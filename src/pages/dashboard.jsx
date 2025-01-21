@@ -181,7 +181,7 @@ const Dashboard = () => {
     },
     {
       _id: "4",
-      label: "TO-DOS",
+      label: "TO-DO",
       total: data?.tasks["todo"] || 0,
       icon: <FaArrowsToDot />,
       bg: "bg-[#be185d]" || 0,
