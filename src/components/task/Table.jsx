@@ -153,7 +153,7 @@ const Table = ({ tasks }) => {
           <table className="w-full ">
             <TableHeader />
             <tbody>
-              {tasks.map((task, index) => (
+              {tasks?.map((task, index) => (
                 <TableRow key={index} task={task} />
               ))}
             </tbody>

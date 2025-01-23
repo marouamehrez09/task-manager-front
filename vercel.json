@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://task-manager-back-25aj.onrender.com/api/$1",
+      "headers": {
+        "Accept": "application/json"
+      }
+    },
+    {
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
+    }
+  ]
+}
