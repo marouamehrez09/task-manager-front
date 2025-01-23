@@ -8,7 +8,13 @@ import SelectList from "../SelectList";
 import { BiImages } from "react-icons/bi";
 import Button from "../Button";
 import { toast } from "react-toastify";
-import axios from "axios"; // importer axios
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../../utils/firebase";
 import {
   useCreateTaskMutation,
   useUpdateTaskMutation,
@@ -17,6 +23,7 @@ import { dateFormatter } from "../../utils";
 
 const LISTS = ["TODO", "IN PROGRESS", "COMPLETED"];
 const PRIORITY = ["HIGH", "MEDIUM", "NORMAL", "LOW"];
+const uploadedFileURLs = [];
 
 const AddTask = ({ open, setOpen, task }) => {
   const defaultValues = {
@@ -27,7 +34,6 @@ const AddTask = ({ open, setOpen, task }) => {
     priority: "",
     assets: [],
   };
-
   const {
     register,
     handleSubmit,
@@ -37,46 +43,53 @@ const AddTask = ({ open, setOpen, task }) => {
   const [team, setTeam] = useState(task?.team || []);
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
   const [priority, setPriority] = useState(
-    task?.priority?.toUpperCase() || PRIORITY[2] 
+    task?.priority?.toUpperCase() || PRIORITY[2]
   );
-  const [assets, setAssets] = useState([]); // Stocke les fichiers sélectionnés
+  const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   const [createTask, { isLoading }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
   const URLS = task?.assets ? [...task.assets] : [];
 
-  const handleSelect = (e) => {
-    setAssets(e.target.files); // Met à jour les fichiers sélectionnés
+  const uploadFile = (file) => {
+    const storage = getStorage(app);
+    const name = new Date().getTime() + file.name;
+    const storageRef = ref(storage, name);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          console.log("Uploading");
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              uploadedFileURLs.push(downloadURL);
+              resolve();
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        }
+      );
+    });
   };
 
-  
-  const uploadImage = async (file) => {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("upload_preset", "taskManager");
-
-    try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dhv39enn5/upload",
-        form
-      );
-      const imageUrl = response.data.secure_url;
-      return imageUrl; // Retourne l'URL de l'image téléchargée
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw error;
-    }
+  const handleSelect = (e) => {
+    setAssets(e.target.files);
   };
 
   const submitHandler = async (data) => {
-    let uploadedFileURLs = [];
-
     for (const file of assets) {
       setUploading(true);
       try {
-        const imageUrl = await uploadImage(file);
-        uploadedFileURLs.push(imageUrl); // Ajoute l'URL de l'image téléchargée
+        await uploadFile(file);
       } catch (error) {
         console.error("Error uploading file", error.message);
         return;
@@ -88,7 +101,7 @@ const AddTask = ({ open, setOpen, task }) => {
     try {
       const newData = {
         ...data,
-        assets: [...URLS, ...uploadedFileURLs], // Ajoute les URLs des images téléchargées
+        assets: [...URLS, ...uploadedFileURLs],
         team,
         stage,
         priority,
