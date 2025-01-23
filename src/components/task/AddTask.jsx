@@ -50,6 +50,7 @@ const AddTask = ({ open, setOpen, task }) => {
     setAssets(e.target.files); // Met à jour les fichiers sélectionnés
   };
 
+  
   const uploadImage = async (file) => {
     const form = new FormData();
     form.append("file", file);
