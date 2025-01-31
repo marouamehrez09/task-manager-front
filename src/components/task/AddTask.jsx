@@ -51,6 +51,7 @@ const AddTask = ({ open, setOpen, task }) => {
   };
 
   
+  // utlisation de cloudinary
   const uploadImage = async (file) => {
     const form = new FormData();
     form.append("file", file);

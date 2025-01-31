@@ -22,6 +22,7 @@ const Login = () => {
   const submitHandler = async (data) => {
     try {
       const result = await login(data).unwrap();
+      
       dispatch(setCredentials(result));
       navigate("/");
       console.log(result);
