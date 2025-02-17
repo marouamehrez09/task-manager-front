@@ -6,7 +6,8 @@ import {
   MdSettings,
   MdTaskAlt,
 } from "react-icons/md";
-import { FaTasks, FaTrashAlt, FaUsers } from "react-icons/fa";
+import { PiChatCircleText } from "react-icons/pi";
+import { FaChargingStation, FaTasks, FaTrashAlt, FaUsers } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { setOpenSidebar } from "../redux/slices/authSlice";
@@ -39,14 +40,19 @@ const linkData = [
     icon: <MdOutlinePendingActions />,
   },
   {
-    label: "Team",
-    link: "team",
-    icon: <FaUsers />,
-  },
-  {
     label: "Trash",
     link: "trashed",
     icon: <FaTrashAlt />,
+  },
+  {
+    label: "Chat",
+    link: "chat",
+    icon: <PiChatCircleText />,
+  },
+  {
+    label: "Team",
+    link: "team",
+    icon: <FaUsers />,
   },
 ];
 
@@ -58,7 +64,7 @@ const Sidebar = () => {
 
   const path = location.pathname.split("/")[1];
 
-  const sidebarLinks = user?.isAdmin ? linkData : linkData.slice(0, 5);
+  const sidebarLinks = user?.isAdmin ? linkData : linkData.slice(0, 7);
 
   const closeSidebar = () => {
     dispatch(setOpenSidebar(false));
