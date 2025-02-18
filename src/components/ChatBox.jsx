@@ -3,7 +3,7 @@ import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy 
 import { db } from '../utils/firebase';
 
 function ChatBox({ selectedUser }) { 
-  const userData = localStorage.getItem("userInfo");
+  const userData = sessionStorage.getItem("userInfo");
   const user = userData ? JSON.parse(userData) : null;
 
   const [newMessage, setNewMessage] = useState("");
