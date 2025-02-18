@@ -9,7 +9,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
         //credentials:"include",   // contient cookies
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       }),
     }),
 
@@ -19,7 +19,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
         //credentials:"include",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       }),
     }),
 
@@ -28,7 +28,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: `${AUTH_URL}/logout`,
         method: "POST",
         //credentials:"include",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       }),
     }),
   }),

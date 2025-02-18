@@ -16,12 +16,13 @@ const authSlice = createSlice({
     setCredentials: (state, action) => {
       state.user = action.payload.user;
       localStorage.setItem("userInfo", JSON.stringify(action.payload.user));
-      localStorage.setItem("token", action.payload.token); // Stocke le token dans localStorage
+      sessionStorage.setItem("token", action.payload.token); // Stocke le token 
     },
     logout: (state, action) => {
       state.user = null;
       localStorage.removeItem("userInfo");
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     },
     setOpenSidebar: (state, action) => {
       state.isSidebarOpen = action.payload;

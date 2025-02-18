@@ -3,7 +3,8 @@ import axios from "axios";
 
 const LeftSidebar = ({ onUserSelect }) => { 
   const [users, setUsers] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
+  //console.log("Token récupéré:", token);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -15,13 +16,18 @@ const LeftSidebar = ({ onUserSelect }) => {
           },
         });
 
-        setUsers(response.data);
+        //console.log("Réponse de l'API:", response.data);
+        setUsers(response.data); 
+        //console.log(response.data)
+
       } catch (error) {
         console.error("Erreur lors de la récupération des utilisateurs:", error);
+       
       }
     };
 
     if (token) {
+      //console.log("Liste des utilisateurs:", users);
       fetchUsers();
     }
   }, [token]);
