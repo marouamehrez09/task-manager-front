@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy } from "firebase/firestore";
-import { db } from '../utils/firebase';
+import { db } from '../utils/firebase'
+import moment from "moment"
 
 function ChatBox({ selectedUser }) { 
   const userData = sessionStorage.getItem("userInfo");
@@ -19,7 +20,8 @@ function ChatBox({ selectedUser }) {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]); 
+  }, [messages]);
+   
 
   useEffect(() => {
     if (chatId) {
@@ -58,18 +60,19 @@ function ChatBox({ selectedUser }) {
   }
 
   return (
+  
     <div className="flex flex-col h-[500px] w-full p-4 bg-white rounded-lg shadow-md">
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.userId === user?._id ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-xs md:max-w-md p-3 rounded-lg text-white shadow-md ${msg.userId === user?._id ? "bg-blue-500" : "bg-gray-400 text-black"}`}>
-              <p className="text-sm font-semibold">{msg.userName}</p>
-              <p className="mt-1">{msg.text}</p>
+            <div className={`max-w-xs md:max-w-md p-3 rounded-lg text-lg text-white shadow-md ${msg.userId === user?._id ? "bg-blue-500" : "bg-gray-400 text-black"}`}>
+              <p className="mt-1 text-white font-semibold">{msg.userName}</p>
+              <p className="mt-1 text-lg text-gray-800 p-2 rounded-lg">{msg.text}</p>
+              <p className="mt-1 text-gray-200 text-xs italic text-right">{msg.createdAt ? moment(msg.createdAt.toDate()).calendar() : "En cours..."}</p>
             </div>
           </div>
         ))}
-        
         <div ref={messagesEndRef}></div>
 
       </div>
