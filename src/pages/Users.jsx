@@ -42,7 +42,6 @@ const Users = () => {
   const deleteHandler = async () => {
     try {
       const result = await deleteUser(selected);
-
       refetch();
       toast.success("Deleted");
       setSelected(null);

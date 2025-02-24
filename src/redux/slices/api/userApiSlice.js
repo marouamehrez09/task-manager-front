@@ -41,7 +41,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
       query: (data) => ({
         url: `${USER_URL}/notifications`,
         method: "GET",
-
         headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       }),
     }),
@@ -62,6 +61,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
         headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       }),
+
+    addUser: builder.mutation({
+        query: (id) => ({
+          url: `${USER_URL}/${id}`,
+          method: "Add",
+          headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
+        }),
+      }), 
     }),
   }),
 });

@@ -7,13 +7,14 @@ import Textbox from "./Textbox";
 import Loading from "./Loader";
 import Button from "./Button";
 import { useRegisterMutation } from "../redux/slices/api/authApiSlice";
-import { useUpdateUserMutation } from "../redux/slices/api/userApiSlice";
+import { useGetTeamListQuery, useUpdateUserMutation } from "../redux/slices/api/userApiSlice";
 import { setCredentials } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
 
 const AddUser = ({ open, setOpen, userData }) => {
   let defaultValues = userData ?? {};
   const { user } = useSelector((state) => state.auth);
+  const { data, refetch } = useGetTeamListQuery();
 
   const {
     register,
@@ -30,11 +31,12 @@ const AddUser = ({ open, setOpen, userData }) => {
         const result = await UpdateUser(data).unwrap();
         toast.success("Profile updated");
         if (userData?._id === user._id) {
-          dispatch(setCredentials({ ...result.user }));
+          dispatch(setCredentials({ ...result.user }))
         }
       } else {
-        const result = await addNewUser(data).unwrap();
-        toast.success("New user added");
+        const result = await addNewUser(data).unwrap()
+        toast.success("New user added")
+        refetch()
       }
       setTimeout(() => {
         setOpen(false);
