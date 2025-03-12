@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy, doc, updateDoc } from "firebase/firestore";
 import { db } from '../utils/firebase'
 import moment from "moment"
 
@@ -21,7 +21,7 @@ function ChatBox({ selectedUser }) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-   
+
 
   useEffect(() => {
     if (chatId) {
@@ -30,8 +30,19 @@ function ChatBox({ selectedUser }) {
         where("chatId", "==", chatId),
         orderBy("createdAt", "asc")
       );
+
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const messagesList = querySnapshot.docs.map(doc => doc.data());
+        const messagesList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+
+      messagesList.forEach(async(msg) => {
+        if(msg.userId!== user?._id && !msg.read) {
+          const msgRef= doc(db,"messages", msg.id)
+          await updateDoc(msgRef, {read:true})
+        }
+      })
         setMessages(messagesList);
       });
 
@@ -49,7 +60,8 @@ function ChatBox({ selectedUser }) {
       createdAt: serverTimestamp(),
       userId: user?._id,
       userName: user?.name,
-      chatId, 
+      chatId,
+      read: false,
     });
 
     setNewMessage("");
@@ -61,7 +73,7 @@ function ChatBox({ selectedUser }) {
 
   return (
   
-    <div className="flex flex-col h-[500px] w-full p-4 bg-white rounded-lg shadow-md">
+    <div className="flex flex-col h-[500px] w-full p-4 bg-white rounded-lg shadow-md ">
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
@@ -96,3 +108,4 @@ function ChatBox({ selectedUser }) {
 }
 
 export default ChatBox;
+

@@ -8,13 +8,16 @@ const Chat = () => {
   const handleUserSelect = (user) => {
     setSelectedUser(user);
   };
+  
 
   return (
     <div className="flex">
-      <LeftSidebar onUserSelect={handleUserSelect} /> 
+      <LeftSidebar onUserSelect={handleUserSelect}/> 
       <ChatBox selectedUser={selectedUser} /> 
     </div>
   );
 };
 
 export default Chat;
+
+
