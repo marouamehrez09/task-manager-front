@@ -15,7 +15,7 @@ const LeftSidebar = ({ onUserSelect }) => {
 
   const [userMsg, setUserMsg] = useState({})
   const [unreadedMsg, setUnreadedMsg] = useState({})
-  const [totalUnrededMsg, setTotalUnrededMsg] = useState(0)
+  //const [totalUnrededMsg, setTotalUnrededMsg] = useState(0)
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,7 +49,7 @@ const LeftSidebar = ({ onUserSelect }) => {
     const unsubscribe = onSnapshot(messageRef, (querySnapshot) => {
       const msgData = {};
       const unreaded = {};
-      let totalUnreded = 0;
+      //let totalUnreded = 0;
 
       querySnapshot.forEach((doc) => {
         const msg = doc.data();
@@ -66,13 +66,15 @@ const LeftSidebar = ({ onUserSelect }) => {
 
       if(!msg.read && msg.userId !== currentUserId && chatId.includes(currentUserId)) {
         unreaded[chatId]= (unreaded[chatId] || 0) +1 ;
-        totalUnreded ++;
+        //totalUnreded ++;
       }
       })
+      //console.log("Unread messages:", unreaded);
+      //console.log("Total unread messages:", totalUnreded);
 
       setUserMsg(msgData);
       setUnreadedMsg(unreaded)
-      setTotalUnrededMsg(totalUnreded)
+      //setTotalUnrededMsg(totalUnreded)
     })
 
     return () => unsubscribe()
@@ -88,7 +90,7 @@ const LeftSidebar = ({ onUserSelect }) => {
     <div className="sidebar w-72 bg-gradient-to-r from-blue-500 to-blue-700 p-6 rounded-xl shadow-lg space-y-6 h-[500px]">
       <h2 className="text-2xl font-semibold text-white mb-6">
           Team Members
-          {totalUnrededMsg > 0 && <span className="bg-red-500 text-white rounded-full px-2 text-xs">{totalUnrededMsg}</span>}
+          {/*} {totalUnrededMsg > 0 && <span className="bg-red-500 text-white rounded-full px-2 text-xs">{totalUnrededMsg}</span>}*/}
       </h2>
       <ul className="space-y-4  overflow-y-auto h-[calc(500px-120px)]">
         {/*{users?.map((user) => (

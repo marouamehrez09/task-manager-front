@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdDashboard,
   MdOutlineAddTask,
@@ -12,51 +12,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { setOpenSidebar } from "../redux/slices/authSlice";
 import clsx from "clsx";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../utils/firebase";
 
-const linkData = [
-  {
-    label: "Dashboard",
-    link: "dashboard",
-    icon: <MdDashboard />,
-  },
-  {
-    label: "Tasks",
-    link: "tasks",
-    icon: <FaTasks />,
-  },
-  {
-    label: "Completed",
-    link: "completed/completed",
-    icon: <MdTaskAlt />,
-  },
-  {
-    label: "In Progress",
-    link: "in-progress/in progress",
-    icon: <MdOutlinePendingActions />,
-  },
-  {
-    label: "To Do",
-    link: "todo/todo",
-    icon: <MdOutlinePendingActions />,
-  },
-  {
-    label: "Trash",
-    link: "trashed",
-    icon: <FaTrashAlt />,
-  },
-  {
-    label: "Chat",
-    link: "chat",
-    icon: <PiChatCircleText />,
-  },
-  {
-    label: "Team",
-    link: "team",
-    icon: <FaUsers />,
-  },
-];
+
 
 const Sidebar = () => {
+  const currentUser = JSON.parse(sessionStorage.getItem("userInfo"));
+  const currentUserId = currentUser?._id;
+
   const { user } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -64,6 +28,96 @@ const Sidebar = () => {
 
   const path = location.pathname.split("/")[1];
 
+  const [userMsg, setUserMsg] = useState({})
+  const [unreadedMsg, setUnreadedMsg] = useState({})
+  const [totalUnrededMsg, setTotalUnrededMsg] = useState(0)
+
+useEffect(() => {
+    const messageRef = collection(db, "messages")
+
+    const unsubscribe = onSnapshot(messageRef, (querySnapshot) => {
+      const msgData = {};
+      const unreaded = {};
+      let totalUnreded = 0;
+
+      querySnapshot.forEach((doc) => {
+        const msg = doc.data();
+        const chatId = msg.chatId;
+
+      if(!msgData[chatId] || msgData[chatId].createdAt < msg.createdAt) {
+        msgData[chatId] = {
+          text: msg.text,
+          createdAt: msg.createdAt,
+          SenderId: msg.userId,
+          read: msg.read,
+        }
+      }
+
+      if(!msg.read && msg.userId !== currentUserId && chatId.includes(currentUserId)) {
+        unreaded[chatId]= (unreaded[chatId] || 0) +1 ;
+        totalUnreded ++;
+      }
+      })
+      //console.log("Unread messages:", unreaded);
+      //console.log("Total unread messages:", totalUnreded);
+
+      setUserMsg(msgData);
+      setUnreadedMsg(unreaded)
+      setTotalUnrededMsg(totalUnreded)
+    })
+
+    return () => unsubscribe()
+  }, [currentUserId])
+
+  const linkData = [
+    {
+      label: "Dashboard",
+      link: "dashboard",
+      icon: <MdDashboard />,
+    },
+    {
+      label: "Tasks",
+      link: "tasks",
+      icon: <FaTasks />,
+    },
+    {
+      label: "Completed",
+      link: "completed/completed",
+      icon: <MdTaskAlt />,
+    },
+    {
+      label: "In Progress",
+      link: "in-progress/in progress",
+      icon: <MdOutlinePendingActions />,
+    },
+    {
+      label: "To Do",
+      link: "todo/todo",
+      icon: <MdOutlinePendingActions />,
+    },
+    {
+      label: "Trash",
+      link: "trashed",
+      icon: <FaTrashAlt />,
+    },
+    {
+      label: "Chat",
+      link: "chat",
+      icon:(
+        
+      <div className="relative">
+      <PiChatCircleText />
+          {totalUnrededMsg > 0 &&
+            <span className="bg-red-500 text-white rounded-full px-2 text-xs absolute top-0 left-40">{totalUnrededMsg}</span>}
+      </div> 
+      
+    )},
+    {
+      label: "Team",
+      link: "team",
+      icon: <FaUsers />,
+    },
+  ];
   const sidebarLinks = user?.isAdmin ? linkData : linkData.slice(0, 7);
 
   const closeSidebar = () => {

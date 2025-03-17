@@ -3,7 +3,7 @@ import LeftSidebar from "../components/LeftSidebar";
 import ChatBox from "../components/ChatBox";
 
 const Chat = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null)
 
   const handleUserSelect = (user) => {
     setSelectedUser(user);
