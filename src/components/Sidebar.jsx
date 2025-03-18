@@ -61,13 +61,17 @@ useEffect(() => {
       //console.log("Unread messages:", unreaded);
       //console.log("Total unread messages:", totalUnreded);
 
+    
       setUserMsg(msgData);
       setUnreadedMsg(unreaded)
-      setTotalUnrededMsg(totalUnreded)
-    })
+      if (totalUnreded !== totalUnrededMsg) {
+        setTotalUnrededMsg(totalUnreded);
+      }
+      }
+    )
 
     return () => unsubscribe()
-  }, [currentUserId])
+  }, [currentUserId, totalUnrededMsg])
 
   const linkData = [
     {

@@ -78,7 +78,7 @@ const LeftSidebar = ({ onUserSelect }) => {
     })
 
     return () => unsubscribe()
-  }, [currentUserId])
+  }, [currentUserId ])
   
 
   const handleUserSelect = (user) => {
