@@ -1,4 +1,5 @@
-// Import the functions you need from the SDKs you need
+{
+  /*// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
@@ -22,16 +23,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);*/
+}
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDdXXAwbXa1ZxrZdocqSM72MuWW8fNYyRc",
+  authDomain: "tast-manager-3e681.firebaseapp.com",
+  databaseURL:
+    "https://tast-manager-3e681-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "tast-manager-3e681",
+  storageBucket: "tast-manager-3e681.firebasestorage.app",
+  messagingSenderId: "254589355835",
+  appId: "1:254589355835:web:58035a4993e3ea62ed591e",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-//export const db = getDatabase(app);
-
-
-
-
-//export const db = getFirestore(app)
-
-// Initialisation de Realtime Database
-
-//const database = getDatabase(app)
-
-//export { database, ref, push, onValue, serverTimestamp,set};
